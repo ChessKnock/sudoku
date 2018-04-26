@@ -1,0 +1,97 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background-color: #F5FFB8;
+}
+/* центрирует поле */
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 720px;
+  height: 600px;
+  border-radius: 10px;
+  box-shadow: 0 0 4px 1px black;
+  background-color: #067541;
+}
+
+#start-btn {
+  width: 160px;
+  height: 40px;
+  border-radius: 9px;
+  box-shadow: 0 0 10px 0px black;
+  text-align: center;
+  line-height: 40px;
+  font-weight: bold;
+  color: #035931;
+  text-shadow: 0px 0px 1px rgb(0, 0, 0);
+  text-decoration: none;
+  background-color: #9FF4CD;
+}
+#start-btn:hover {
+  box-shadow: 0 0 5px 0px black;
+  background-color:#72FDBD;
+}
+
+.article-field {
+  display: flex;
+  height: 10px;
+  width: 10px;
+  background-color: red;
+}
+
+/* -------------- левое поле -------------- */
+#left-field {
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 500px;
+  height: 500px;
+  border-radius: 3px;
+}
+.rows {
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  width: 490px;
+  background-color: inherit;
+}
+
+.cells {
+  height: 50px;
+  width: 50px;
+  background-color: #F5FFB8;
+}
+
+/* -------------- правое поле -------------- */
+#right-field {
+  flex-direction: column;
+  align-items: center;
+  width: 200px;
+  height: 580px;
+}
+
+#generate-btn {
+  display: block;
+  width: 180px;
+  height: 40px;
+  margin-top: 10px;
+  text-align: center;
+  line-height: 40px;
+  text-decoration: none;
+  font-weight: bold;
+  background-color: grey;
+}
+
+
+
+/* скрываем то что не надо */
+[hide] {
+  display: none;
+}
