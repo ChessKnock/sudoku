@@ -13,8 +13,7 @@ startBtn.onclick = function() {
 };
 
 genBtn.onclick = function() {
-  fillingTheField();
-  clearFilled();
+  fName();
 };
 
 function creationCells() {
@@ -30,62 +29,59 @@ function creationCells() {
 	}
 }
 
-function fillingTheField() {
+function fName() {
   let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  let cells = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  let tempNumber, tempCell;
   let pointer;
-  let tempNumber;
 
-	for(let i = 0; i < 9; i++) {
-    tempNumber = getUniqueNumber(numbers);
+  for(let i = 0; i < 9; i++) {
+    tempNumber = numbers[getRandomNumber(0, numbers.length)];
     numbers.splice(numbers.indexOf(tempNumber), 1);
-    pointer = { row: 0, column: 0, amountCol: [1, 2, 3] };
 
-		for(let j = 1; j < 9; j+=3) {
-      checkFreeCell(j, pointer);
-      inputInner(pointer, tempNumber);
-		}
+    tempCell = cells[getRandomNumber(0, cells.length)];
+    cells.splice(cells.indexOf(tempCell), 1);
+
+    pointer = getPointer(tempCell);
+    alert(cells);
+    for(let j = 0; j < 3; j++) {
+      inputNumber(pointer.row, pointer.column, tempNumber);
+      pointer.row += 3;
+      pointer.column = pointer.column % 3 == 0 ? pointer.column - 2 : pointer.column + 1;
+    }
+
+
   }
-  
 }
-
 // max олжен быть на 1 больше чем желаемый max иначе будет на 1 меньше!
 function getRandomNumber(min, max) {
 	return Math.floor(Math.random() * (max - min) + min);
 }
-// Можно обойтись и просто строкой но лучше пока подержу в функции
-function getUniqueNumber(arr) {
-	return arr[getRandomNumber(0, arr.length)];
+
+function inputNumber(row, column, tempNumber) {
+  for(let i = 0; i < 3; i++) {
+    document.querySelector(`.r-${row}_c-${column}`).innerHTML = tempNumber;
+    row = row % 3 == 0 ? row - 2 : row + 1;
+    column = column % 3 == 0 ? column + 1 : column + 4;
+  }
 }
 
-function checkFreeCell(j, pointer) {
-	let tempCell;
-
-	while(true) {
-    pointer.column = pointer.amountCol[getRandomNumber(0, pointer.amountCol.length)];
-    pointer.row = getRandomNumber(j, j + 3);
-
-		tempCell = document.querySelector(`.r-${pointer.row}_c-${pointer.column}`);
-		if(!(tempCell.classList.contains("filled"))) {
-      pointer.amountCol.splice(pointer.amountCol.indexOf(pointer.column), 1);
-      tempCell.classList.add("filled");
-			break;
-		}
-	}
-}
-
-function inputInner(pointer, tempNumber) {
-	for(let i = 0; i < 3; i++) {
-		document.querySelector(`.r-${pointer.row}_c-${pointer.column}`).innerHTML = tempNumber;
-		pointer.column = pointer.column % 3 === 0 ? pointer.column + 1 : pointer.column + 4;
-		pointer.row = pointer.row % 3 === 0 ? pointer.row - 2 : pointer.row + 1;
-	}
-}
-// странно когда в коллекции один элемент теряет класс .filled, то он удаляется из нее
-// следовательно и length уменьшается и надо выводить количество в отдельную переменную
-function clearFilled() {
-  let elems = document.getElementsByClassName("filled");
-  let length = elems.length; 
-  for (let i = 0; i < length; i++) {
-    elems[0].classList.toggle("filled");                  
+function getPointer(tempCell) {
+  let row, column;
+  
+  tempCell /= 3;
+  if(tempCell <= 1){    
+    row = 1;
+    column = Math.floor((tempCell / 3) * 10)
+    return {row: row, column: column};
+  } else { if(tempCell > 1 &&  tempCell <= 2) {
+    row = 2;
+    column = Math.floor(((tempCell - 1) / 3) * 10);
+    return {row: row, column: column};
+  } else {
+    row = 3;
+    column = Math.floor(((tempCell - 2) / 3) * 10);
+    return {row: row, column: column};
+  }
   }
 }
