@@ -14,16 +14,15 @@ startBtn.onclick = function() {
 };
 
 genBtn.onclick = function() {
-  let mass = createField();
+  let array = createField();
   
   swapBtn.onclick = function() {
-    mass = swapCells(mass, [0, 1, 2], 3, true);
-    // mass = swapCells(mass, [0, 3, 6], 1, true);
-    // mass = swapCells(mass, [0, 3, 6], 1, false);
-    fillInTheField(mass);
+    array = swapCells(array, true);
+    array = swapCells(array, false);
+    fillInTheField(array);
   };
   
-  fillInTheField(mass);
+  fillInTheField(array);
 };
 
 
@@ -41,9 +40,9 @@ function creationCells() {
 }
 
 function createField() {
-  let numbers = createMass(true);
-  let cells = createMass(true);
-  let mass = createMass(false);
+  let numbers = createArray(true);
+  let cells = createArray(true);
+  let array = createArray(false);
   let tempNumber, tempCell;
   let pointer;
   // заполнение массива числами
@@ -56,12 +55,12 @@ function createField() {
 
     pointer = getPointer(tempCell);
     for(let j = 0; j < 3; j++) {
-      inputNumber(pointer.row, pointer.column, tempNumber, mass);
+      inputNumber(pointer.row, pointer.column, tempNumber, array);
       pointer.row += 3;
       pointer.column = pointer.column % 3 == 0 ? pointer.column - 2 : pointer.column + 1;
     }
   }
-  return mass;
+  return array;
 }
 
 // max олжен быть на 1 больше чем желаемый max иначе будет на 1 меньше!
@@ -98,70 +97,53 @@ function getPointer(tempCell) {
   }
 }
 // выбор между заполнением цифрами и массивами
-function createMass(bool) {
-  let mass = [];
+function createArray(bool) {
+  let array = [];
   if(bool) {
     for(let i = 0; i < 9; i++) {
-      mass.push(i+1);
+      array.push(i+1);
     }
   } else {
     for(let i = 0; i < 9; i++) {
-      mass.push([]);
+      array.push([]);
     }
   }
-  return mass;
+  return array;
 }
 // из массива в HTML элемент
-function fillInTheField(mass) {
+function fillInTheField(array) {
   for(let i = 0; i < 9; i++) {
     for( let j = 0; j < 9; j++) {
-      document.querySelector(`.r-${i+1}_c-${j+1}`).innerHTML = mass[i][j];
+      document.querySelector(`.r-${i+1}_c-${j+1}`).innerHTML = array[i][j];
     }
   }
 }
-
-function swapCells(mass, arrCells, step, swapRows) {
-  let lengthOfChanges =  1;//getRandomNumber(3, 6);
-  let randomCell, firstChoice, secondChoice;
-  ;
+// переделать нахер что бы меняло по две строки а не по три.
+function swapCells(array, rowsOrColumn) {
+  let lengthOfChanges =  getRandomNumber(6, 10);
+  let arrCells;
+  let ranBlock, ranCellFirst, ranCellSecond;
 
   for(let i = 0; i < lengthOfChanges; i++) {
-    randomCell = arrCells[getRandomNumber(0, 3)];
-    for(let j = 0; j < 9; j++) {
-      if(swapRows)  {
-        mass[randomCell][j] = mass[randomCell][j] + mass[randomCell + step][j] + mass[randomCell + (step * 2)][j];
-      } else {
-        mass[j][randomCell] = mass[j][randomCell] + mass[j][randomCell + step] + mass[j][randomCell + (step * 2)];
+    arrCells = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+    ranBlock = getRandomNumber(0, arrCells.length);
+    ranCellFirst = arrCells[ranBlock][getRandomNumber(0, arrCells[ranBlock].length)];
+    arrCells[ranBlock].splice(arrCells[ranBlock].indexOf(ranCellFirst), 1);
+    ranCellSecond = arrCells[ranBlock][getRandomNumber(0, arrCells[ranBlock].length)];
+    
+    if(rowsOrColumn) {
+      for(let j = 0; j < 9; j++) {
+        array[ranCellFirst][j] = array[ranCellFirst][j] + array[ranCellSecond][j];
+        array[ranCellSecond][j] = array[ranCellFirst][j] - array[ranCellSecond][j];
+        array[ranCellFirst][j] = array[ranCellFirst][j] - array[ranCellSecond][j];
       }
-    }     
-
-    if(true) {
-      firstChoice = randomCell + step;
-      secondChoice = randomCell + (step * 2);
     } else {
-      firstChoice = randomCell + (step * 2);
-      secondChoice = randomCell + step;
-    }
-    
-    for(let j = 0; j < 9; j++) {
-      if(swapRows) {
-        mass[firstChoice][j] = mass[randomCell][j] - mass[firstChoice][j];
-        mass[randomCell][j] = mass[randomCell][j] - mass[firstChoice][j];
-      } else {
-        mass[j][firstChoice] = mass[j][randomCell] - mass[j][firstChoice];
-        mass[j][randomCell] = mass[j][randomCell] - mass[j][firstChoice];
+      for(let j = 0; j < 9; j++) {
+        array[j][ranCellFirst] = array[j][ranCellFirst] + array[j][ranCellSecond];
+        array[j][ranCellSecond] = array[j][ranCellFirst]- array[j][ranCellSecond];
+        array[j][ranCellFirst] = array[j][ranCellFirst] - array[j][ranCellSecond];
       }
-    }
-    
-    for(let j = 0; j < 9; j++) {
-      if(swapRows) {
-        mass[secondChoice][j] = mass[firstChoice][j] - mass[secondChoice][j];
-        mass[firstChoice][j] = mass[firstChoice][j] - mass[secondChoice][j];
-      } else {
-        mass[j][secondChoice] = mass[j][firstChoice] - mass[j][secondChoice];
-        mass[j][firstChoice] = mass[j][firstChoice] - mass[j][secondChoice];
-      }
-    }
+    }   
   }
-  return mass;
+  return array;
 }
